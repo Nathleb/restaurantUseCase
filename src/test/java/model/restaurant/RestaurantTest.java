@@ -88,6 +88,18 @@ class RestaurantTest
     }
 
     @Test
+    void equals_sameName_consideredEqual()
+    {
+        assertThat(new Restaurant("Le Ticino")).isEqualTo(new Restaurant("Le Ticino"));
+    }
+
+    @Test
+    void equals_differentName_notEqual()
+    {
+        assertThat(new Restaurant("Le Ticino")).isNotEqualTo(new Restaurant("L'étoile"));
+    }
+
+    @Test
     void getSales_registeredAfterPurchase()
     {
         restaurant.addMeal("Burger", "Recipe", 1200);

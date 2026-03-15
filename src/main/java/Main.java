@@ -2,7 +2,7 @@ import java.util.List;
 
 import model.restaurant.Restaurant;
 import model.user.Customer;
-import model.user.Order;
+import model.restaurant.Order;
 import model.user.RestaurantOwner;
 import static model.user.Customer.Type.OTHER;
 

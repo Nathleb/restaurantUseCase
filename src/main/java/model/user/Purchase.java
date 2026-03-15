@@ -10,6 +10,7 @@ import java.util.Optional;
 import lombok.Getter;
 import model.pricing.DiscountRule;
 import model.restaurant.Meal;
+import model.restaurant.Order;
 
 import static java.time.LocalDate.now;
 
@@ -26,6 +27,7 @@ public class Purchase
 
     private final List<Order>        orders;
     private final List<DiscountRule> discountRules;
+    private Integer                  cachedPrice;
 
     Purchase(Customer customer, List<Order> orders, List<DiscountRule> discountRules)
     {
@@ -40,13 +42,17 @@ public class Purchase
     {
         return orders;
     }
-
+    // a definir car la fonction n'est pas pure a cause de la verification de date
     public int getPrice()
     {
-        Optional<Meal> freeMeal = cheapestMealIfFree();
-        return orders.stream()
-            .mapToInt(order -> priceFor(order, freeMeal))
-            .sum();
+        if (cachedPrice == null)
+        {
+            Optional<Meal> freeMeal = cheapestMealIfFree();
+            cachedPrice = orders.stream()
+                .mapToInt(order -> priceFor(order, freeMeal))
+                .sum();
+        }
+        return cachedPrice;
     }
 
     private int priceFor(Order order, Optional<Meal> freeMeal)

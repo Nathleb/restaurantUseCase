@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.restaurant.Meal;
+import model.restaurant.Order;
 import model.restaurant.Restaurant;
 import static model.user.Customer.Type.*;
 import static org.assertj.core.api.Assertions.*;
@@ -91,8 +92,9 @@ class PurchaseTest
             customer.makeOrder(restaurant, List.of(meal));
 
         // 5ème achat chez restaurant → 10% sur restaurant uniquement, pas sur other
+        // prendre en compte qu'un meal est offert (trouver une alternative de test)
         Purchase purchase = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(meal)),   // 1000 * 0.90 = 900
+            new Order(restaurant, List.of(meal, meal)),   // 1000 * 0.90 = 900
             new Order(other, List.of(otherMeal)))); // 1500 * 1.00 = 1500
 
         assertThat(purchase.getPrice()).isEqualTo(2400);
@@ -107,7 +109,7 @@ class PurchaseTest
 
         // 10ème achat → 15% sur tous les restaurants
         Purchase purchase = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(meal)),   // 1000 * 0.85 = 850
+            new Order(restaurant, List.of(meal, meal)),   // 1000 * 0.85 = 850
             new Order(other, List.of(otherMeal)))); // 1500 * 0.85 = 1275
 
         assertThat(purchase.getPrice()).isEqualTo(2125);

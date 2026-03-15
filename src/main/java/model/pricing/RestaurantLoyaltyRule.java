@@ -1,7 +1,7 @@
 package model.pricing;
 
 import model.user.Customer;
-import model.user.Order;
+import model.restaurant.Order;
 
 public class RestaurantLoyaltyRule implements DiscountRule
 {

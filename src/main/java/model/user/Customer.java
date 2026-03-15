@@ -9,6 +9,7 @@ import lombok.Getter;
 import model.RestaurantSale;
 import model.pricing.DiscountRuleRegistry;
 import model.restaurant.Meal;
+import model.restaurant.Order;
 import model.restaurant.Restaurant;
 
 public class Customer implements User
@@ -53,7 +54,7 @@ public class Customer implements User
 
         Purchase purchase = new Purchase(this, orders, DiscountRuleRegistry.rules());
         purchases.add(purchase);
-        // En pratique ce sera une vue
+        // En pratique ce sera une vue sur purchase en base donc pas de transaction multiples
         orders.forEach(order -> order.getRestaurant()
             .registerSale(new RestaurantSale(getName(), purchase.getDate(), order.getMeals())));
         return purchase;

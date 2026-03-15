@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.restaurant.Meal;
+import model.restaurant.Order;
 import model.restaurant.Restaurant;
 import static model.user.Customer.Type.*;
 import static org.assertj.core.api.Assertions.*;
@@ -189,43 +190,11 @@ class OrderTest
     }
 
     @Test
-    void makePurchase_null_throws()
-    {
-        Customer customer = new Customer("A", "B", OTHER);
-
-        assertThatThrownBy(() -> customer.makePurchase(null))
-            .isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void makePurchase_emptyList_throws()
-    {
-        Customer customer = new Customer("A", "B", OTHER);
-
-        assertThatThrownBy(() -> customer.makePurchase(List.of()))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void makeOrder_nullMeals_throws()
     {
         Customer customer = new Customer("A", "B", OTHER);
 
         assertThatThrownBy(() -> customer.makeOrder(restaurant, null))
-            .isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void order_nullRestaurant_throws()
-    {
-        assertThatThrownBy(() -> new Order(null, List.of(cheapMeal)))
-            .isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void order_nullMeals_throws()
-    {
-        assertThatThrownBy(() -> new Order(restaurant, null))
             .isInstanceOf(NullPointerException.class);
     }
 

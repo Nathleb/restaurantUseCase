@@ -1,11 +1,9 @@
-package model.user;
+package model.restaurant;
 
 import java.util.List;
 import java.util.Objects;
 
 import lombok.Getter;
-import model.restaurant.Meal;
-import model.restaurant.Restaurant;
 
 public class Order
 {
