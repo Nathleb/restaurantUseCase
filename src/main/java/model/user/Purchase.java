@@ -16,7 +16,7 @@ import static java.time.LocalDate.now;
 
 public class Purchase
 {
-    private static final int PAST_WEEK_DAYS         = 7;
+    private static final int PAST_WEEK_DAYS         = 6;
     private static final int MINIMUM_MEALS_FOR_FREE = 2;
 
     @Getter
@@ -27,7 +27,7 @@ public class Purchase
 
     private final List<Order>        orders;
     private final List<DiscountRule> discountRules;
-    private Integer                  cachedPrice;
+    private int                      price;
 
     Purchase(Customer customer, List<Order> orders, List<DiscountRule> discountRules)
     {
@@ -42,17 +42,18 @@ public class Purchase
     {
         return orders;
     }
-    // a definir car la fonction n'est pas pure a cause de la verification de date
+
     public int getPrice()
     {
-        if (cachedPrice == null)
-        {
-            Optional<Meal> freeMeal = cheapestMealIfFree();
-            cachedPrice = orders.stream()
-                .mapToInt(order -> priceFor(order, freeMeal))
-                .sum();
-        }
-        return cachedPrice;
+        return price;
+    }
+
+    void initPrice()
+    {
+        Optional<Meal> freeMeal = cheapestMealIfFree();
+        this.price = orders.stream()
+            .mapToInt(order -> priceFor(order, freeMeal))
+            .sum();
     }
 
     private int priceFor(Order order, Optional<Meal> freeMeal)

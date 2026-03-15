@@ -54,6 +54,7 @@ public class Customer implements User
 
         Purchase purchase = new Purchase(this, orders, DiscountRuleRegistry.rules());
         purchases.add(purchase);
+        purchase.initPrice();
         // En pratique ce sera une vue sur purchase en base donc pas de transaction multiples
         orders.forEach(order -> order.getRestaurant()
             .registerSale(new RestaurantSale(getName(), purchase.getDate(), order.getMeals())));
