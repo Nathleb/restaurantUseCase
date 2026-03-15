@@ -1,5 +1,7 @@
 package model.restaurant;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +60,7 @@ class RestaurantTest
     }
 
     @Test
-    void addMeal_zeroPice_throws()
+    void addMeal_zeroPrice_throws()
     {
         assertThatThrownBy(() -> restaurant.addMeal("Burger", "Recipe", 0))
             .isInstanceOf(IllegalArgumentException.class);
@@ -69,5 +71,33 @@ class RestaurantTest
     {
         assertThatThrownBy(() -> restaurant.addMeal("Burger", "Recipe", -100))
             .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void addMeal_nullName_throws()
+    {
+        assertThatThrownBy(() -> restaurant.addMeal(null, "Recipe", 1200))
+            .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void addMeal_nullRecipe_throws()
+    {
+        assertThatThrownBy(() -> restaurant.addMeal("Burger", null, 1200))
+            .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void getSales_registeredAfterPurchase()
+    {
+        restaurant.addMeal("Burger", "Recipe", 1200);
+        Meal burger = restaurant.getMealByName("Burger");
+        model.user.Customer customer = new model.user.Customer("A", "B", model.user.Customer.Type.OTHER);
+
+        customer.makeOrder(restaurant, List.of(burger));
+
+        assertThat(restaurant.getSales()).hasSize(1);
+        assertThat(restaurant.getSales().get(0).customerName()).isEqualTo("A B");
+        assertThat(restaurant.getSales().get(0).meals()).containsExactly(burger);
     }
 }

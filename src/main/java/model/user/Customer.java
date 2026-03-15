@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 import lombok.Getter;
+import model.RestaurantSale;
+import model.pricing.DiscountRuleRegistry;
 import model.restaurant.Meal;
 import model.restaurant.Restaurant;
 
@@ -20,31 +22,41 @@ public class Customer implements User
     @Getter
     private final Type type;
 
-    private final List<Order> orders;
+    private final List<Purchase> purchases;
 
     public Customer(String firstName, String lastName, Type type)
     {
         this.firstName = Objects.requireNonNull(firstName, "firstName must not be null");
         this.lastName  = Objects.requireNonNull(lastName,  "lastName must not be null");
         this.type      = Objects.requireNonNull(type,      "type must not be null");
-        this.orders = new ArrayList<>();
+        this.purchases = new ArrayList<>();
     }
 
-    public List<Order> getOrders()
+    public List<Purchase> getPurchases()
     {
-        return Collections.unmodifiableList(orders);
+        return Collections.unmodifiableList(purchases);
     }
 
-    public Order makeOrder(Restaurant restaurant, List<Meal> meals)
+    // Avis sur le breaking change Order n'a plus la meme signification, on retourne ici Purchase
+    public Purchase makeOrder(Restaurant restaurant, List<Meal> meals)
     {
         Objects.requireNonNull(restaurant, "restaurant must not be null");
         Objects.requireNonNull(meals,      "meals must not be null");
-        if (meals.isEmpty())
-            throw new IllegalArgumentException("meals must not be empty");
-        Order order = new Order(restaurant, this, meals);
-        orders.add(order);
-        restaurant.registerOrder(order);
-        return order;
+        return makePurchase(List.of(new Order(restaurant, meals)));
+    }
+
+    public Purchase makePurchase(List<Order> orders)
+    {
+        Objects.requireNonNull(orders, "orders must not be null");
+        if (orders.isEmpty())
+            throw new IllegalArgumentException("at least one order is required");
+
+        Purchase purchase = new Purchase(this, orders, DiscountRuleRegistry.rules());
+        purchases.add(purchase);
+        // En pratique ce sera une vue
+        orders.forEach(order -> order.getRestaurant()
+            .registerSale(new RestaurantSale(getName(), purchase.getDate(), order.getMeals())));
+        return purchase;
     }
 
     public enum Type

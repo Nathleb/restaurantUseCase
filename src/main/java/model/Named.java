@@ -1,6 +1,6 @@
 package model;
 
-public interface Entity
+public interface Named
 {
     String getName();
 }

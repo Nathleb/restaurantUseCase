@@ -3,9 +3,9 @@ package model.restaurant;
 import java.util.Objects;
 
 import lombok.Getter;
-import model.Entity;
+import model.Named;
 
-public class Meal implements Entity
+public class Meal implements Named
 {
     private final Restaurant restaurant;
 
@@ -20,9 +20,11 @@ public class Meal implements Entity
 
     Meal(Restaurant restaurant, String name, String recipe, int price)
     {
-        this.restaurant = restaurant;
-        this.name = name;
-        this.recipe = recipe;
+        this.restaurant = Objects.requireNonNull(restaurant, "restaurant must not be null");
+        this.name       = Objects.requireNonNull(name,       "name must not be null");
+        this.recipe     = Objects.requireNonNull(recipe,     "recipe must not be null");
+        if (price <= 0)
+            throw new IllegalArgumentException("price must be positive");
         this.price = price;
     }
 

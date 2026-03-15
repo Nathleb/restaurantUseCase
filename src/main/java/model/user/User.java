@@ -1,9 +1,9 @@
 package model.user;
 
-import model.Entity;
+import model.Named;
 import static java.lang.String.format;
 
-public interface User extends Entity
+public interface User extends Named
 {
     String getFirstName();
 
