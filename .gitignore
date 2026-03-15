@@ -1,3 +1,5 @@
 /recruitment.iml
 /.idea/
 /target/
+/.metals/
+/.vscode/

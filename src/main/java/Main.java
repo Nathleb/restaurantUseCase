@@ -15,40 +15,44 @@ public class Main
 
         Restaurant ticino = new Restaurant("Le Ticino");
         Restaurant etoile = new Restaurant("L'étoile");
-        Restaurant texan = new Restaurant("Le texan");
+        Restaurant texan  = new Restaurant("Le texan");
 
         // *************
         // *** USERS ***
         // *************
 
-        RestaurantOwner robertDupont = new RestaurantOwner("Robert", "Dupont", ticino);
-        RestaurantOwner magaliNoel = new RestaurantOwner("Magali", "Noel", etoile);
-        RestaurantOwner nicolasBenoit = new RestaurantOwner("Nicolas", "Benoit", texan);
+        RestaurantOwner robertDupont  = new RestaurantOwner("Robert",    "Dupont",  ticino);
+        RestaurantOwner magaliNoel    = new RestaurantOwner("Magali",    "Noel",    etoile);
+        RestaurantOwner nicolasBenoit = new RestaurantOwner("Nicolas",   "Benoit",  texan);
 
-        Customer catherine = new Customer("Catherine", "Zwahlen", OTHER);
-        Customer clementine = new Customer("Clementine", "Delerce", OTHER);
+        Customer catherine  = new Customer("Catherine",  "Zwahlen", OTHER);
+        Customer clementine = new Customer("Clementine", "Delerce",  OTHER);
 
         // *************
         // *** MEALS ***
         // *************
 
-        robertDupont.addMeal("Pizza tonno", 20.50);
-        robertDupont.addMeal("Pasta bolognese", 18.30);
-        robertDupont.addMeal("Tiramisu", 12.80);
+        robertDupont.addMeal("Pizza tonno",     "Pâte, sauce tomate, thon",              2050);
+        robertDupont.addMeal("Pasta bolognese", "Pâtes, viande hachée, sauce tomate",    1830);
+        robertDupont.addMeal("Tiramisu",        "Mascarpone, café, biscuits",             1280);
 
-        magaliNoel.addMeal("Cassoulet", 22.60);
-        magaliNoel.addMeal("Risotto", 19.15);
-        magaliNoel.addMeal("Banana split", 14.90);
+        magaliNoel.addMeal("Cassoulet",    "Haricots blancs, saucisse, confit de canard", 2260);
+        magaliNoel.addMeal("Risotto",      "Riz arborio, parmesan, bouillon",             1915);
+        magaliNoel.addMeal("Banana split", "Banane, glace vanille, chantilly",            1490);
 
-        nicolasBenoit.addMeal("Burger vege", 21.10);
-        nicolasBenoit.addMeal("Fajitas", 24.0);
+        nicolasBenoit.addMeal("Burger vege", "Pain brioche, steak végétal, cheddar", 2110);
+        nicolasBenoit.addMeal("Fajitas",     "Tortilla, poulet, poivrons, épices",   2400);
 
         // **************
         // *** ORDERS ***
         // **************
 
-        catherine.makeOrder(ticino, List.of("Pizza tonno", "Tiramisu"));
-        clementine.makeOrder(etoile, List.of("Risotto", "Banana split"));
+        catherine.makeOrder(ticino, List.of(
+            ticino.getMealByName("Pizza tonno"),
+            ticino.getMealByName("Tiramisu")));
+        clementine.makeOrder(etoile, List.of(
+            etoile.getMealByName("Risotto"),
+            etoile.getMealByName("Banana split")));
 
         System.out.println("done");
     }

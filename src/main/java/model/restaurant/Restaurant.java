@@ -1,7 +1,9 @@
 package model.restaurant;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import lombok.Getter;
 import model.Entity;
@@ -13,30 +15,42 @@ public class Restaurant implements Entity
     @Getter
     private final String name;
 
-    @Getter
     private final List<Meal> meals;
 
-    @Getter
     private final List<Order> orders;
 
     public Restaurant(String name)
     {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name must not be null");
         this.meals = new ArrayList<>();
         this.orders = new ArrayList<>();
     }
 
-    public void addMeal(String mealName, Double price)
+    public List<Meal> getMeals()
     {
-        if (meals.stream().map(Meal::getName).anyMatch(n -> n.equals(name)))
-            throw new IllegalArgumentException(format("Meal %s already exists in %s", mealName, name));
-        meals.add(new Meal(this, mealName, price));
+        return Collections.unmodifiableList(meals);
     }
 
-    public Restaurant withReceivedOrder(Order order)
+    public List<Order> getOrders()
     {
+        return Collections.unmodifiableList(orders);
+    }
+
+    public void addMeal(String mealName, String recipe, int price)
+    {
+        Objects.requireNonNull(mealName, "mealName must not be null");
+        Objects.requireNonNull(recipe,   "recipe must not be null");
+        if (price <= 0)
+            throw new IllegalArgumentException("price must be positive");
+        if (meals.stream().map(Meal::getName).anyMatch(n -> n.equals(mealName)))
+            throw new IllegalArgumentException(format("Meal %s already exists in %s", mealName, name));
+        meals.add(new Meal(this, mealName, recipe, price));
+    }
+
+    public void registerOrder(Order order)
+    {
+        Objects.requireNonNull(order, "order must not be null");
         orders.add(order);
-        return this;
     }
 
     public Meal getMealByName(String mealName)

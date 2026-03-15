@@ -7,19 +7,22 @@ import model.Entity;
 
 public class Meal implements Entity
 {
-    @Getter
     private final Restaurant restaurant;
 
     @Getter
     private final String name;
 
     @Getter
-    private final Double price;
+    private final String recipe;
 
-    Meal(Restaurant restaurant, String name, Double price)
+    @Getter
+    private final int price;
+
+    Meal(Restaurant restaurant, String name, String recipe, int price)
     {
         this.restaurant = restaurant;
         this.name = name;
+        this.recipe = recipe;
         this.price = price;
     }
 
@@ -31,12 +34,12 @@ public class Meal implements Entity
         if (o == null || getClass() != o.getClass())
             return false;
         Meal meal = (Meal) o;
-        return Objects.equals(name, meal.name);
+        return Objects.equals(name, meal.name) && Objects.equals(restaurant, meal.restaurant);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(name);
+        return Objects.hash(name, restaurant);
     }
 }
