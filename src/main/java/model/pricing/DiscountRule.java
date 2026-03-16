@@ -5,6 +5,6 @@ import model.restaurant.RestaurantOrder;
 
 public interface DiscountRule
 {
-    boolean applies(Customer customer, RestaurantOrder order);
+    boolean applies(Customer customer, RestaurantOrder restaurantOrder);
     double discount();
 }

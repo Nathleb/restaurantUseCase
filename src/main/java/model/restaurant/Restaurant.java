@@ -56,19 +56,4 @@ public class Restaurant implements Named
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException(format("No meal named %s in %s", mealName, name)));
     }
-
-    // Je suppose que deux restaurants peuvent avoir le meme nom donc la regle n'est pas assez forte ici
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(name, ((Restaurant) o).name);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(name);
-    }
 }

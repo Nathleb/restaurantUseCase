@@ -274,6 +274,11 @@ Historique des commandes du client.
       }
     ],
     "totalPrice": "integer",
+    "appliedDiscount": {
+      "type": "PROFILE | LOYALTY_RESTAURANT | LOYALTY_PLATFORM",
+      "percentage": "integer"
+    },
+    "secondMealFree": "boolean",
     "createdAt": "datetime"
   }
 ]
