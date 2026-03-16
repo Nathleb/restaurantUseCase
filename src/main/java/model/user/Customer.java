@@ -9,7 +9,7 @@ import lombok.Getter;
 import model.RestaurantSale;
 import model.pricing.DiscountRuleRegistry;
 import model.restaurant.Meal;
-import model.restaurant.Order;
+import model.restaurant.RestaurantOrder;
 import model.restaurant.Restaurant;
 
 public class Customer implements User
@@ -23,42 +23,41 @@ public class Customer implements User
     @Getter
     private final Type type;
 
-    private final List<Purchase> purchases;
+    private final List<Order> orders;
 
     public Customer(String firstName, String lastName, Type type)
     {
         this.firstName = Objects.requireNonNull(firstName, "firstName must not be null");
         this.lastName  = Objects.requireNonNull(lastName,  "lastName must not be null");
         this.type      = Objects.requireNonNull(type,      "type must not be null");
-        this.purchases = new ArrayList<>();
+        this.orders = new ArrayList<>();
     }
 
-    public List<Purchase> getPurchases()
+    public List<Order> getOrders()
     {
-        return Collections.unmodifiableList(purchases);
+        return Collections.unmodifiableList(orders);
     }
 
-    // Avis sur le breaking change Order n'a plus la meme signification, on retourne ici Purchase
-    public Purchase makeOrder(Restaurant restaurant, List<Meal> meals)
+    public Order makeOrder(Restaurant restaurant, List<Meal> meals)
     {
         Objects.requireNonNull(restaurant, "restaurant must not be null");
         Objects.requireNonNull(meals,      "meals must not be null");
-        return makePurchase(List.of(new Order(restaurant, meals)));
+        return makeOrder(List.of(new RestaurantOrder(restaurant, meals)));
     }
 
-    public Purchase makePurchase(List<Order> orders)
+    public Order makeOrder(List<RestaurantOrder> restaurantOrders)
     {
-        Objects.requireNonNull(orders, "orders must not be null");
-        if (orders.isEmpty())
+        Objects.requireNonNull(restaurantOrders, "restaurantOrders must not be null");
+        if (restaurantOrders.isEmpty())
             throw new IllegalArgumentException("at least one order is required");
 
-        Purchase purchase = new Purchase(this, orders, DiscountRuleRegistry.rules());
-        purchases.add(purchase);
-        purchase.initPrice();
-        // En pratique ce sera une vue sur purchase en base donc pas de transaction multiples
-        orders.forEach(order -> order.getRestaurant()
-            .registerSale(new RestaurantSale(getName(), purchase.getDate(), order.getMeals())));
-        return purchase;
+        Order order = new Order(this, restaurantOrders, DiscountRuleRegistry.rules());
+        orders.add(order);
+        order.initPrice();
+        // En pratique ce sera une vue sur order en base donc pas de transaction multiples
+        restaurantOrders.forEach(restaurantOrder -> restaurantOrder.getRestaurant()
+            .registerSale(new RestaurantSale(getName(), order.getDate(), restaurantOrder.getMeals())));
+        return order;
     }
 
     public enum Type

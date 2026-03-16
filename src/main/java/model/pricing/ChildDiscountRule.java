@@ -1,12 +1,12 @@
 package model.pricing;
 
 import model.user.Customer;
-import model.restaurant.Order;
+import model.restaurant.RestaurantOrder;
 
 public class ChildDiscountRule implements DiscountRule
 {
     @Override
-    public boolean applies(Customer customer, Order order)
+    public boolean applies(Customer customer, RestaurantOrder restaurantOrder)
     {
         return customer.getType() == Customer.Type.CHILD;
     }

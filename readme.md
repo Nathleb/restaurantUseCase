@@ -404,7 +404,7 @@ Les points suivants devront évoluer pour supporter cette fonctionnalité :
 
 `customer_order` est remplacé par deux tables :
 
-`purchase` — session d'achat (une par action client) :
+`order` — session d'achat (une par action client) :
 
 | Colonne     | Type      | Contraintes             |
 |-------------|-----------|-------------------------|
@@ -417,7 +417,7 @@ Les points suivants devront évoluer pour supporter cette fonctionnalité :
 | Colonne       | Type   | Contraintes                      |
 |---------------|--------|----------------------------------|
 | id            | BIGINT | PK, auto-increment               |
-| purchase_id   | BIGINT | FK → purchase(id), NOT NULL      |
+| order_id   | BIGINT | FK → order(id), NOT NULL      |
 | restaurant_id | BIGINT | FK → restaurant(id), NOT NULL    |
 
 `order_meal.order_id` devient `FK → restaurant_order(id)` (au lieu de `customer_order`).

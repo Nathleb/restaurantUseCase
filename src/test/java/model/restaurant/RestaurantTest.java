@@ -100,7 +100,7 @@ class RestaurantTest
     }
 
     @Test
-    void getSales_registeredAfterPurchase()
+    void getSales_registeredAfterOrder()
     {
         restaurant.addMeal("Burger", "Recipe", 1200);
         Meal burger = restaurant.getMealByName("Burger");

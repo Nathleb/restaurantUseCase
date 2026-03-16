@@ -10,11 +10,11 @@ import java.util.Optional;
 import lombok.Getter;
 import model.pricing.DiscountRule;
 import model.restaurant.Meal;
-import model.restaurant.Order;
+import model.restaurant.RestaurantOrder;
 
 import static java.time.LocalDate.now;
 
-public class Purchase
+public class Order
 {
     private static final int PAST_WEEK_DAYS         = 6;
     private static final int MINIMUM_MEALS_FOR_FREE = 2;
@@ -25,22 +25,22 @@ public class Purchase
     @Getter
     private final Customer customer;
 
-    private final List<Order>        orders;
+    private final List<RestaurantOrder>        restaurantOrders;
     private final List<DiscountRule> discountRules;
     private int                      price;
 
-    Purchase(Customer customer, List<Order> orders, List<DiscountRule> discountRules)
+    Order(Customer customer, List<RestaurantOrder> restaurantOrders, List<DiscountRule> discountRules)
     {
         this.customer      = Objects.requireNonNull(customer,      "customer must not be null");
         this.discountRules = Objects.requireNonNull(discountRules, "discountRules must not be null");
-        Objects.requireNonNull(orders, "orders must not be null");
-        this.orders = List.copyOf(orders);
+        Objects.requireNonNull(restaurantOrders, "orders must not be null");
+        this.restaurantOrders = List.copyOf(restaurantOrders);
         this.date   = now();
     }
 
-    public List<Order> getOrders()
+    public List<RestaurantOrder> getRestaurantOrders()
     {
-        return orders;
+        return restaurantOrders;
     }
 
     public int getPrice()
@@ -51,23 +51,23 @@ public class Purchase
     void initPrice()
     {
         Optional<Meal> freeMeal = cheapestMealIfFree();
-        this.price = orders.stream()
+        this.price = restaurantOrders.stream()
             .mapToInt(order -> priceFor(order, freeMeal))
             .sum();
     }
 
-    private int priceFor(Order order, Optional<Meal> freeMeal)
+    private int priceFor(RestaurantOrder restaurantOrder, Optional<Meal> freeMeal)
     {
-        int free = freeMeal.filter(order.getMeals()::contains)
+        int free = freeMeal.filter(restaurantOrder.getMeals()::contains)
                            .map(Meal::getPrice)
                            .orElse(0);
-        return (int) Math.round((order.getRawPrice() - free) * (1 - bestDiscountFor(order)));
+        return (int) Math.round((restaurantOrder.getRawPrice() - free) * (1 - bestDiscountFor(restaurantOrder)));
     }
 
-    private double bestDiscountFor(Order order)
+    private double bestDiscountFor(RestaurantOrder restaurantOrder)
     {
         return discountRules.stream()
-            .filter(rule -> rule.applies(customer, order))
+            .filter(rule -> rule.applies(customer, restaurantOrder))
             .mapToDouble(DiscountRule::discount)
             .max()
             .orElse(0.0);
@@ -75,17 +75,17 @@ public class Purchase
 
     private Optional<Meal> cheapestMealIfFree()
     {
-        int totalMeals = orders.stream().mapToInt(o -> o.getMeals().size()).sum();
+        int totalMeals = restaurantOrders.stream().mapToInt(o -> o.getMeals().size()).sum();
         if (!hasOrderedInThePastWeek() || totalMeals < MINIMUM_MEALS_FOR_FREE)
             return Optional.empty();
-        return orders.stream()
+        return restaurantOrders.stream()
             .flatMap(o -> o.getMeals().stream())
             .min(Comparator.comparingInt(Meal::getPrice));
     }
 
     private boolean hasOrderedInThePastWeek()
     {
-        return customer.getPurchases().stream()
+        return customer.getOrders().stream()
             .anyMatch(p -> p != this && ChronoUnit.DAYS.between(p.getDate(), now()) <= PAST_WEEK_DAYS);
     }
 }

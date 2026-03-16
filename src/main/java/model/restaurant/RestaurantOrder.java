@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import lombok.Getter;
 
-public class Order
+public class RestaurantOrder
 {
     @Getter
     private final Restaurant restaurant;
@@ -13,7 +13,7 @@ public class Order
     @Getter
     private final List<Meal> meals;
 
-    public Order(Restaurant restaurant, List<Meal> meals)
+    public RestaurantOrder(Restaurant restaurant, List<Meal> meals)
     {
         this.restaurant = Objects.requireNonNull(restaurant, "restaurant must not be null");
         Objects.requireNonNull(meals, "meals must not be null");

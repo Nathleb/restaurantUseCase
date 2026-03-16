@@ -2,7 +2,7 @@ import java.util.List;
 
 import model.restaurant.Restaurant;
 import model.user.Customer;
-import model.restaurant.Order;
+import model.restaurant.RestaurantOrder;
 import model.user.RestaurantOwner;
 import static model.user.Customer.Type.OTHER;
 
@@ -54,9 +54,9 @@ public class Main
             ticino.getMealByName("Tiramisu")));
 
         // Commande multi-restaurants
-        catherine.makePurchase(List.of(
-            new Order(ticino, List.of(ticino.getMealByName("Pasta bolognese"))),
-            new Order(etoile, List.of(etoile.getMealByName("Risotto"), etoile.getMealByName("Banana split")))));
+        catherine.makeOrder(List.of(
+            new RestaurantOrder(ticino, List.of(ticino.getMealByName("Pasta bolognese"))),
+            new RestaurantOrder(etoile, List.of(etoile.getMealByName("Risotto"), etoile.getMealByName("Banana split")))));
 
         clementine.makeOrder(etoile, List.of(
             etoile.getMealByName("Risotto"),

@@ -6,12 +6,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.restaurant.Meal;
-import model.restaurant.Order;
+import model.restaurant.RestaurantOrder;
 import model.restaurant.Restaurant;
 import static model.user.Customer.Type.*;
 import static org.assertj.core.api.Assertions.*;
 
-class PurchaseTest
+class OrderTest
 {
     private Restaurant restaurant;
     private Restaurant other;
@@ -36,20 +36,20 @@ class PurchaseTest
     // --- Validation ---
 
     @Test
-    void makePurchase_nullList_throws()
+    void makeOrder_nullList_throws()
     {
         Customer customer = new Customer("A", "B", OTHER);
 
-        assertThatThrownBy(() -> customer.makePurchase(null))
+        assertThatThrownBy(() -> customer.makeOrder(null))
             .isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void makePurchase_emptyList_throws()
+    void makeOrder_emptyList_throws()
     {
         Customer customer = new Customer("A", "B", OTHER);
 
-        assertThatThrownBy(() -> customer.makePurchase(List.of()))
+        assertThatThrownBy(() -> customer.makeOrder(List.of()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -74,21 +74,21 @@ class PurchaseTest
     @Test
     void order_nullRestaurant_throws()
     {
-        assertThatThrownBy(() -> new Order(null, List.of(cheapMeal)))
+        assertThatThrownBy(() -> new RestaurantOrder(null, List.of(cheapMeal)))
             .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void order_nullMeals_throws()
     {
-        assertThatThrownBy(() -> new Order(restaurant, null))
+        assertThatThrownBy(() -> new RestaurantOrder(restaurant, null))
             .isInstanceOf(NullPointerException.class);
     }
 
     @Test
     void order_emptyMeals_throws()
     {
-        assertThatThrownBy(() -> new Order(restaurant, List.of()))
+        assertThatThrownBy(() -> new RestaurantOrder(restaurant, List.of()))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -98,27 +98,27 @@ class PurchaseTest
     void getPrice_childProfile_applies50PercentDiscount()
     {
         Customer customer = new Customer("A", "B", CHILD);
-        Purchase purchase = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
+        Order order = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
 
-        assertThat(purchase.getPrice()).isEqualTo(1500);
+        assertThat(order.getPrice()).isEqualTo(1500);
     }
 
     @Test
     void getPrice_studentProfile_applies25PercentDiscount()
     {
         Customer customer = new Customer("A", "B", STUDENT);
-        Purchase purchase = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
+        Order order = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
 
-        assertThat(purchase.getPrice()).isEqualTo(2250);
+        assertThat(order.getPrice()).isEqualTo(2250);
     }
 
     @Test
     void getPrice_standardProfile_noDiscount()
     {
         Customer customer = new Customer("A", "B", OTHER);
-        Purchase purchase = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
+        Order order = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
 
-        assertThat(purchase.getPrice()).isEqualTo(3000);
+        assertThat(order.getPrice()).isEqualTo(3000);
     }
 
     // --- Fidélité restaurant ---
@@ -129,7 +129,7 @@ class PurchaseTest
         Customer customer = new Customer("A", "B", OTHER);
         for (int i = 0; i < 4; i++)
             customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase fifth = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order fifth = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(fifth.getPrice()).isEqualTo(900);
     }
@@ -140,7 +140,7 @@ class PurchaseTest
         Customer customer = new Customer("A", "B", OTHER);
         for (int i = 0; i < 3; i++)
             customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase fourth = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order fourth = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(fourth.getPrice()).isEqualTo(1000);
     }
@@ -153,7 +153,7 @@ class PurchaseTest
         Customer customer = new Customer("A", "B", OTHER);
         for (int i = 0; i < 9; i++)
             customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase tenth = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order tenth = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(tenth.getPrice()).isEqualTo(850);
     }
@@ -168,7 +168,7 @@ class PurchaseTest
             customer.makeOrder(restaurant, List.of(cheapMeal));
         for (int i = 0; i < 4; i++)
             customer.makeOrder(other, List.of(otherMeal));
-        Purchase tenth = customer.makeOrder(other, List.of(otherMeal));
+        Order tenth = customer.makeOrder(other, List.of(otherMeal));
 
         assertThat(tenth.getPrice()).isEqualTo(1275); // 15% > 10%
     }
@@ -179,7 +179,7 @@ class PurchaseTest
         Customer customer = new Customer("A", "B", CHILD);
         for (int i = 0; i < 4; i++)
             customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase fifth = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order fifth = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(fifth.getPrice()).isEqualTo(500); // 50% > 10%
     }
@@ -190,7 +190,7 @@ class PurchaseTest
         Customer customer = new Customer("A", "B", CHILD);
         for (int i = 0; i < 9; i++)
             customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase tenth = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order tenth = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(tenth.getPrice()).isEqualTo(500); // 50% > 15%
     }
@@ -201,7 +201,7 @@ class PurchaseTest
         Customer customer = new Customer("A", "B", STUDENT);
         for (int i = 0; i < 4; i++)
             customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase fifth = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order fifth = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(fifth.getPrice()).isEqualTo(750); // 25% > 10%
     }
@@ -212,7 +212,7 @@ class PurchaseTest
         Customer customer = new Customer("A", "B", STUDENT);
         for (int i = 0; i < 9; i++)
             customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase tenth = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order tenth = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(tenth.getPrice()).isEqualTo(750); // 25% > 15%
     }
@@ -223,9 +223,9 @@ class PurchaseTest
     void getPrice_firstOrderEver_noFreeMeal()
     {
         Customer customer = new Customer("A", "B", OTHER);
-        Purchase purchase = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
+        Order order = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
 
-        assertThat(purchase.getPrice()).isEqualTo(3000);
+        assertThat(order.getPrice()).isEqualTo(3000);
     }
 
     @Test
@@ -233,7 +233,7 @@ class PurchaseTest
     {
         Customer customer = new Customer("A", "B", OTHER);
         customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
-        Purchase second = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
+        Order second = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
 
         assertThat(second.getPrice()).isEqualTo(2000);
     }
@@ -243,7 +243,7 @@ class PurchaseTest
     {
         Customer customer = new Customer("A", "B", STUDENT);
         customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
-        Purchase second = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
+        Order second = customer.makeOrder(restaurant, List.of(cheapMeal, expensiveMeal));
 
         assertThat(second.getPrice()).isEqualTo(1500);
     }
@@ -253,7 +253,7 @@ class PurchaseTest
     {
         Customer customer = new Customer("A", "B", OTHER);
         customer.makeOrder(restaurant, List.of(cheapMeal));
-        Purchase second = customer.makeOrder(restaurant, List.of(cheapMeal));
+        Order second = customer.makeOrder(restaurant, List.of(cheapMeal));
 
         assertThat(second.getPrice()).isEqualTo(1000);
     }
@@ -264,22 +264,22 @@ class PurchaseTest
     void getPrice_multiRestaurant_sumsBothOrders()
     {
         Customer customer = new Customer("A", "B", OTHER);
-        Purchase purchase = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(cheapMeal)),
-            new Order(other, List.of(otherMeal))));
+        Order order = customer.makeOrder(List.of(
+            new RestaurantOrder(restaurant, List.of(cheapMeal)),
+            new RestaurantOrder(other, List.of(otherMeal))));
 
-        assertThat(purchase.getPrice()).isEqualTo(2500);
+        assertThat(order.getPrice()).isEqualTo(2500);
     }
 
     @Test
     void getPrice_multiRestaurant_childDiscountAppliesToAllOrders()
     {
         Customer customer = new Customer("A", "B", CHILD);
-        Purchase purchase = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(cheapMeal)),   // 1000 * 0.50 = 500
-            new Order(other, List.of(otherMeal))));      // 1500 * 0.50 = 750
+        Order order = customer.makeOrder(List.of(
+            new RestaurantOrder(restaurant, List.of(cheapMeal)),   // 1000 * 0.50 = 500
+            new RestaurantOrder(other, List.of(otherMeal))));      // 1500 * 0.50 = 750
 
-        assertThat(purchase.getPrice()).isEqualTo(1250);
+        assertThat(order.getPrice()).isEqualTo(1250);
     }
 
     @Test
@@ -290,11 +290,11 @@ class PurchaseTest
             customer.makeOrder(restaurant, List.of(cheapMeal));
 
         // 2 meals chez restaurant pour que le plat offert reste dans cet order
-        Purchase purchase = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(cheapMeal, cheapMeal)), // (2000-1000) * 0.90 = 900
-            new Order(other, List.of(otherMeal))));               // 1500 * 1.00 = 1500
+        Order order = customer.makeOrder(List.of(
+            new RestaurantOrder(restaurant, List.of(cheapMeal, cheapMeal)), // (2000-1000) * 0.90 = 900
+            new RestaurantOrder(other, List.of(otherMeal))));               // 1500 * 1.00 = 1500
 
-        assertThat(purchase.getPrice()).isEqualTo(2400);
+        assertThat(order.getPrice()).isEqualTo(2400);
     }
 
     @Test
@@ -305,11 +305,11 @@ class PurchaseTest
             customer.makeOrder(restaurant, List.of(cheapMeal));
 
         // 2 meals chez restaurant pour que le plat offert reste dans cet order
-        Purchase purchase = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(cheapMeal, cheapMeal)), // (2000-1000) * 0.85 = 850
-            new Order(other, List.of(otherMeal))));               // 1500 * 0.85 = 1275
+        Order order = customer.makeOrder(List.of(
+            new RestaurantOrder(restaurant, List.of(cheapMeal, cheapMeal)), // (2000-1000) * 0.85 = 850
+            new RestaurantOrder(other, List.of(otherMeal))));               // 1500 * 0.85 = 1275
 
-        assertThat(purchase.getPrice()).isEqualTo(2125);
+        assertThat(order.getPrice()).isEqualTo(2125);
     }
 
     @Test
@@ -323,25 +323,25 @@ class PurchaseTest
         customer.makeOrder(restaurant, List.of(cheapMeal));
 
         // sandwich (500) est le moins cher, dans le 2ème restaurant
-        Purchase purchase = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(expensiveMeal)), // 2000 plein prix
-            new Order(cheap, List.of(sandwich))));         // 500 offert
+        Order order = customer.makeOrder(List.of(
+            new RestaurantOrder(restaurant, List.of(expensiveMeal)), // 2000 plein prix
+            new RestaurantOrder(cheap, List.of(sandwich))));         // 500 offert
 
-        assertThat(purchase.getPrice()).isEqualTo(2000);
+        assertThat(order.getPrice()).isEqualTo(2000);
     }
 
     @Test
     void getPrice_multiRestaurant_cheapestMealFreeAcrossRestaurants()
     {
         Customer customer = new Customer("A", "B", OTHER);
-        customer.makePurchase(List.of(
-            new Order(restaurant, List.of(cheapMeal)),
-            new Order(other, List.of(otherMeal))));
+        customer.makeOrder(List.of(
+            new RestaurantOrder(restaurant, List.of(cheapMeal)),
+            new RestaurantOrder(other, List.of(otherMeal))));
 
         // cheapMeal (1000) offert, dans le 1er restaurant
-        Purchase second = customer.makePurchase(List.of(
-            new Order(restaurant, List.of(cheapMeal)),  // 1000 offert → 0
-            new Order(other, List.of(otherMeal))));     // 1500
+        Order second = customer.makeOrder(List.of(
+            new RestaurantOrder(restaurant, List.of(cheapMeal)),  // 1000 offert → 0
+            new RestaurantOrder(other, List.of(otherMeal))));     // 1500
 
         assertThat(second.getPrice()).isEqualTo(1500);
     }
